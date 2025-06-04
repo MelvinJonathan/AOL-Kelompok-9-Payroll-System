@@ -28,33 +28,43 @@ public class PayrollSystem {
         } while (menuOption != 4);
     }
 
-    public static FullTime readNewFullTime() {
-        int id = 0;
-        String name = null;
-        double sal = 0.0;
-        double hourAndHalf = 0.0;
+    private static EmployeeBasicInfo readEmployeeBasicInfo() {
         Scanner kbd = new Scanner(System.in);
-        System.out.print("Enter Id: "); id = kbd.nextInt();
-        System.out.print("\nEnter Name: "); name = kbd.next();
-        System.out.print("\nEnter Salary: "); sal = kbd.nextDouble();
-        System.out.print("\nEnter Bonus: "); hourAndHalf = kbd.nextDouble();
+        System.out.print("Enter Id: ");
+        int id = kbd.nextInt();
+        System.out.print("\nEnter Name: ");
+        String name = kbd.next();
+        return new EmployeeBasicInfo(id, name, kbd);
+    }
+
+    private static class EmployeeBasicInfo {
+        final int id;
+        final String name;
+        final Scanner scanner;
         
-        FullTime ft1 = new FullTime(id, name, sal, hourAndHalf, getVehicle());
-        return ft1;
+        EmployeeBasicInfo(int id, String name, Scanner scanner) {
+            this.id = id;
+            this.name = name;
+            this.scanner = scanner;
+        }
+    }
+    
+    public static FullTime readNewFullTime() {
+        EmployeeBasicInfo info = readEmployeeBasicInfo();
+        System.out.print("\nEnter Salary: ");
+        double salary = info.scanner.nextDouble();
+        System.out.print("\nEnter Bonus: ");
+        double bonus = info.scanner.nextDouble();
+        return new FullTime(info.id, info.name, salary, bonus, getVehicle());
     }
 
     public static PartTime readNewPartTime() {
-        int id = 0;
-        String name = null;
-        Scanner kbd = new Scanner(System.in);
-        System.out.print("Enter Id: "); id = kbd.nextInt();
-        System.out.print("\nEnter Name: "); name = kbd.next();
-        System.out.print("\nEnter Hourly Rate: "); double rate = kbd.nextDouble();
-        System.out.print("\nEnter Number of Hours Worked: "); double hoursWorked = kbd.nextDouble();
-        
-        Vehicle v1 = getVehicle();
-        PartTime pt1 = new PartTime(id, name, rate, hoursWorked, v1);
-        return pt1;
+        EmployeeBasicInfo info = readEmployeeBasicInfo();
+        System.out.print("\nEnter Hourly Rate: ");
+        double rate = info.scanner.nextDouble();
+        System.out.print("\nEnter Number of Hours Worked: ");
+        double hoursWorked = info.scanner.nextDouble();
+        return new PartTime(info.id, info.name, rate, hoursWorked, getVehicle());
     }
 
     public static byte showMenu() {
